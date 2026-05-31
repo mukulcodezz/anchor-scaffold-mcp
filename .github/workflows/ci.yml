@@ -28,4 +28,4 @@ jobs:
         run: npm run build
 
       - name: Test
-        run: node --test test/*.test.mjs*.test.mjs
+        run: node --test test/*.test.mjs
