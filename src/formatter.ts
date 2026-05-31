@@ -13,19 +13,24 @@ export function formatRust(code: string): string {
 }
 
 export function extractCodeBlock(text: string, language?: string): string {
+  const lang = language ? escapeRegExp(language) : "";
   const patterns = [
-    new RegExp(`\`\`\`${language || ""}\n([\s\S]*?)\n\`\`\``, "g"),
-    new RegExp(`\`\`\`([\s\S]*?)\n\`\`\``, "g"),
+    new RegExp("```" + lang + "\\n([\\s\\S]*?)\\n```"),
+    new RegExp("```[a-z]*\\n([\\s\\S]*?)\\n```"),
   ];
 
   for (const pattern of patterns) {
-    const match = text.match(pattern);
+    const match = pattern.exec(text);
     if (match) {
-      return match[1] || match[0];
+      return match[1] ?? match[0];
     }
   }
 
   return text;
+}
+
+function escapeRegExp(value: string): string {
+  return value.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
 }
 
 export function sanitizeOutput(code: string): string {

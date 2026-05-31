@@ -18,19 +18,28 @@ export function loadConfig(): Config {
   const baseUrl = process.env.SCAFFOLD_BASE_URL;
 
   if (!apiKey) {
+    let fileConfig: Partial<Config>;
     try {
-      const fileConfig = JSON.parse(readFileSync(configFile, "utf-8"));
-      return {
-        provider: fileConfig.provider || provider,
-        apiKey: fileConfig.apiKey,
-        model: fileConfig.model || model,
-        baseUrl: fileConfig.baseUrl || baseUrl,
-      };
+      fileConfig = JSON.parse(readFileSync(configFile, "utf-8"));
     } catch {
       throw new Error(
         "SCAFFOLD_API_KEY not set. Set via env var or ~/.anchor-scaffold/config.json"
       );
     }
+
+    if (!fileConfig.apiKey) {
+      throw new Error(
+        `apiKey missing in ${configFile}. Add an "apiKey" field or set SCAFFOLD_API_KEY.`
+      );
+    }
+
+    const fileProvider = (fileConfig.provider || provider) as Config["provider"];
+    return {
+      provider: fileProvider,
+      apiKey: fileConfig.apiKey,
+      model: fileConfig.model || model || getDefaultModel(fileProvider),
+      baseUrl: fileConfig.baseUrl || baseUrl,
+    };
   }
 
   return {

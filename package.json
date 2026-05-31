@@ -1,6 +1,6 @@
 {
   "name": "anchor-scaffold-mcp",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "description": "Anchor framework AI scaffolding generator MCP server",
   "type": "module",
   "main": "dist/index.js",

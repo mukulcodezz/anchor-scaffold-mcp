@@ -1,9 +1,17 @@
 #!/usr/bin/env node
 
 import { parseArgs } from "util";
-import { createWriteStream } from "fs";
+import { writeFileSync } from "fs";
+import { resolve, relative, isAbsolute } from "path";
 import { loadConfig } from "./config.js";
 import { createProvider } from "./providers/factory.js";
+import {
+  validateIdlPath,
+  validateInstructionName,
+  validateProgramName,
+  validateDescription,
+  ValidationResult,
+} from "./validation.js";
 import { parseIdlTool } from "./tools/parse-idl.js";
 import { generateTsClientTool } from "./tools/generate-ts-client.js";
 import { generateRustAccountsTool } from "./tools/generate-rust-accounts.js";
@@ -56,11 +64,26 @@ Examples:
   process.exit(0);
 }
 
+function check(result: ValidationResult): void {
+  if (!result.isValid()) {
+    throw new Error(result.toString());
+  }
+}
+
+function safeOutputPath(output: string): string {
+  const target = resolve(process.cwd(), output);
+  const rel = relative(process.cwd(), target);
+  if (rel.startsWith("..") || isAbsolute(rel)) {
+    throw new Error(
+      `--output must stay inside the current directory: ${output}`
+    );
+  }
+  return target;
+}
+
 async function main() {
   try {
     const command = values.command || positionals[0];
-    const config = loadConfig();
-    const provider = createProvider(config);
 
     if (!command) {
       console.error("Error: No command specified");
@@ -68,55 +91,58 @@ async function main() {
       process.exit(1);
     }
 
+    // parse-idl is pure local — no provider/API key needed.
+    const getProvider = () => createProvider(loadConfig());
+
     let result: string = "";
 
     switch (command) {
       case "parse-idl": {
-        if (!values.idl) throw new Error("--idl required");
-        result = await parseIdlTool({ idl_path: values.idl });
+        check(validateIdlPath(values.idl ?? ""));
+        result = await parseIdlTool({ idl_path: values.idl! });
         break;
       }
 
       case "gen-ts-client": {
-        if (!values.idl) throw new Error("--idl required");
+        check(validateIdlPath(values.idl ?? ""));
         result = await generateTsClientTool(
-          { idl_path: values.idl, output_path: values.output },
-          provider
+          { idl_path: values.idl!, output_path: values.output },
+          getProvider()
         );
         break;
       }
 
       case "gen-rust-accounts": {
-        if (!values.idl) throw new Error("--idl required");
-        if (!values.instruction) throw new Error("--instruction required");
+        check(validateIdlPath(values.idl ?? ""));
+        check(validateInstructionName(values.instruction ?? ""));
         result = await generateRustAccountsTool(
-          { idl_path: values.idl, instruction_name: values.instruction },
-          provider
+          { idl_path: values.idl!, instruction_name: values.instruction! },
+          getProvider()
         );
         break;
       }
 
       case "gen-tests": {
-        if (!values.idl) throw new Error("--idl required");
+        check(validateIdlPath(values.idl ?? ""));
         result = await generateTestsTool(
           {
-            idl_path: values.idl,
+            idl_path: values.idl!,
             test_framework: (values["test-framework"] as "mocha" | "jest") || "mocha",
           },
-          provider
+          getProvider()
         );
         break;
       }
 
       case "gen-program": {
-        if (!values.description) throw new Error("--description required");
-        if (!values["program-name"]) throw new Error("--program-name required");
+        check(validateDescription(values.description ?? ""));
+        check(validateProgramName(values["program-name"] ?? ""));
         result = await generateProgramTool(
           {
-            description: values.description,
-            program_name: values["program-name"],
+            description: values.description!,
+            program_name: values["program-name"]!,
           },
-          provider
+          getProvider()
         );
         break;
       }
@@ -126,11 +152,10 @@ async function main() {
     }
 
     if (values.output) {
-      const stream = createWriteStream(values.output);
-      stream.write(result);
-      stream.end();
+      const target = safeOutputPath(values.output);
+      writeFileSync(target, result);
       if (values.verbose) {
-        console.error(`✓ Written to ${values.output}`);
+        console.error(`✓ Written to ${target}`);
       }
     } else {
       console.log(result);

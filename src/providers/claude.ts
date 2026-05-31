@@ -6,7 +6,11 @@ export class ClaudeProvider implements AIProvider {
   private model: string;
 
   constructor(options: ProviderOptions) {
-    this.client = new Anthropic({ apiKey: options.apiKey });
+    this.client = new Anthropic({
+      apiKey: options.apiKey,
+      timeout: 120_000,
+      maxRetries: 2,
+    });
     this.model = options.model || "claude-sonnet-4-6";
   }
 

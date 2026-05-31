@@ -1,5 +1,11 @@
 import { createHash } from "crypto";
-import { readFileSync, writeFileSync, mkdirSync } from "fs";
+import {
+  readFileSync,
+  writeFileSync,
+  mkdirSync,
+  readdirSync,
+  unlinkSync,
+} from "fs";
 import { join } from "path";
 import { homedir } from "os";
 
@@ -50,7 +56,7 @@ export function writeCache(
       timestamp: Date.now(),
       ttl: ttlMinutes * 60 * 1000,
     };
-    writeFileSync(path, JSON.stringify(entry, null, 2));
+    writeFileSync(path, JSON.stringify(entry, null, 2), { mode: 0o600 });
   } catch (error) {
     console.error("Cache write failed:", error);
   }
@@ -59,11 +65,9 @@ export function writeCache(
 export function clearCache(): void {
   try {
     mkdirSync(CACHE_DIR, { recursive: true });
-    const files = require("fs")
-      .readdirSync(CACHE_DIR)
-      .filter((f: string) => f.endsWith(".json"));
+    const files = readdirSync(CACHE_DIR).filter((f) => f.endsWith(".json"));
     for (const file of files) {
-      require("fs").unlinkSync(join(CACHE_DIR, file));
+      unlinkSync(join(CACHE_DIR, file));
     }
   } catch {
     // ignore

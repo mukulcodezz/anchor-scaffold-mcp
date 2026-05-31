@@ -9,6 +9,8 @@ export class OpenAIProvider implements AIProvider {
     this.client = new OpenAI({
       apiKey: options.apiKey,
       baseURL: options.baseUrl,
+      timeout: 120_000,
+      maxRetries: 2,
     });
     this.model = options.model || "gpt-4o";
   }

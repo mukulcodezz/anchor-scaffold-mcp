@@ -1,6 +1,18 @@
 # Changelog
 
-## [0.1.0] - 2024-05-31
+## [0.1.1] - 2026-05-31
+
+### Security & Hardening
+- Fixed ESM bug in `cache.ts` (dynamic `require("fs")` in an ES module — `clearCache` was broken)
+- Cache files now written with `0600` permissions (generated code may be sensitive)
+- `cli.ts --output` is now confined to the working directory (blocks `../../` path traversal writes)
+- Wired `validation.ts` into the CLI — IDL path, instruction name, program name, and description are validated before any filesystem or API access
+- `config.ts` now errors clearly when the config file exists but has no `apiKey`
+- `parse-idl` no longer requires an API key (it is a pure local operation)
+- Provider clients (Claude, OpenAI) now use a 120s timeout and 2 retries
+- Fixed broken regex in `formatter.ts` `extractCodeBlock` (escaped char classes, language string now regex-escaped)
+
+## [0.1.0] - 2026-05-31
 
 ### Added
 - **parse_idl** - Parse and summarize Anchor IDL JSON files
