@@ -1,5 +1,9 @@
 # Anchor Scaffold MCP
 
+[![CI](https://github.com/mukulcodezz/anchor-scaffold-mcp/actions/workflows/ci.yml/badge.svg)](https://github.com/mukulcodezz/anchor-scaffold-mcp/actions/workflows/ci.yml)
+[![npm](https://img.shields.io/npm/v/anchor-scaffold-mcp)](https://www.npmjs.com/package/anchor-scaffold-mcp)
+[![License: MIT](https://img.shields.io/badge/License-MIT-green.svg)](LICENSE)
+
 AI code generator for Solana Anchor programs. Generates production-ready TypeScript clients, Rust account structs, tests, and complete programs.
 
 **Start here:** [QUICKSTART.md](QUICKSTART.md)
