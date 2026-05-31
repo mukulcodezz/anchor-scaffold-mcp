@@ -1,0 +1,25 @@
+{
+  "name": "anchor-scaffold-mcp",
+  "version": "0.1.0",
+  "description": "Anchor framework AI scaffolding generator MCP server",
+  "type": "module",
+  "main": "dist/index.js",
+  "bin": {
+    "anchor-scaffold": "dist/cli.js"
+  },
+  "scripts": {
+    "build": "tsc",
+    "dev": "tsc --watch",
+    "start": "node dist/index.js"
+  },
+  "dependencies": {
+    "@anthropic-ai/sdk": "^0.24.0",
+    "@modelcontextprotocol/sdk": "^1.0.0",
+    "openai": "^4.52.0",
+    "zod": "^3.22.4"
+  },
+  "devDependencies": {
+    "@types/node": "^20.11.0",
+    "typescript": "^5.3.3"
+  }
+}
