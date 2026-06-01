@@ -7,6 +7,38 @@
   "bin": {
     "anchor-scaffold": "dist/cli.js"
   },
+  "files": [
+    "dist",
+    "examples",
+    "README.md",
+    "LICENSE",
+    "CHANGELOG.md"
+  ],
+  "engines": {
+    "node": ">=18"
+  },
+  "keywords": [
+    "solana",
+    "anchor",
+    "mcp",
+    "model-context-protocol",
+    "ai",
+    "codegen",
+    "scaffold",
+    "blockchain",
+    "rust",
+    "smart-contracts"
+  ],
+  "author": "Mukul",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/mukulcodezz/anchor-scaffold-mcp.git"
+  },
+  "homepage": "https://github.com/mukulcodezz/anchor-scaffold-mcp#readme",
+  "bugs": {
+    "url": "https://github.com/mukulcodezz/anchor-scaffold-mcp/issues"
+  },
   "scripts": {
     "build": "tsc",
     "dev": "tsc --watch",
