@@ -1,0 +1,100 @@
+{
+  "name": "anchor-scaffold-mcp",
+  "displayName": "Anchor Scaffold MCP",
+  "description": "AI scaffolding for Solana Anchor programs — registers the Anchor Scaffold MCP server for use in VS Code agent mode (parse IDL, generate TS clients, Rust accounts, tests, and full programs).",
+  "version": "0.1.0",
+  "publisher": "mukulcodezz",
+  "license": "MIT",
+  "author": "Mukul",
+  "icon": "images/icon.png",
+  "engines": {
+    "vscode": "^1.101.0"
+  },
+  "categories": [
+    "AI",
+    "Machine Learning",
+    "Programming Languages",
+    "Other"
+  ],
+  "keywords": [
+    "solana",
+    "anchor",
+    "mcp",
+    "model context protocol",
+    "ai",
+    "rust",
+    "blockchain"
+  ],
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/mukulcodezz/anchor-scaffold-mcp.git",
+    "directory": "vscode-extension"
+  },
+  "homepage": "https://github.com/mukulcodezz/anchor-scaffold-mcp#readme",
+  "bugs": {
+    "url": "https://github.com/mukulcodezz/anchor-scaffold-mcp/issues"
+  },
+  "main": "./dist/extension.js",
+  "activationEvents": [
+    "onStartupFinished"
+  ],
+  "contributes": {
+    "mcpServerDefinitionProviders": [
+      {
+        "id": "anchorScaffold.provider",
+        "label": "Anchor Scaffold MCP"
+      }
+    ],
+    "commands": [
+      {
+        "command": "anchorScaffold.setApiKey",
+        "title": "Anchor Scaffold: Set API Key",
+        "category": "Anchor Scaffold"
+      },
+      {
+        "command": "anchorScaffold.clearApiKey",
+        "title": "Anchor Scaffold: Clear API Key",
+        "category": "Anchor Scaffold"
+      }
+    ],
+    "configuration": {
+      "title": "Anchor Scaffold MCP",
+      "properties": {
+        "anchorScaffold.provider": {
+          "type": "string",
+          "enum": [
+            "claude",
+            "openai",
+            "openai-compatible"
+          ],
+          "default": "claude",
+          "description": "AI provider used to generate code."
+        },
+        "anchorScaffold.model": {
+          "type": "string",
+          "default": "",
+          "description": "Model id override. Leave empty to use the provider default (Claude: claude-sonnet-4-6, OpenAI: gpt-4o)."
+        },
+        "anchorScaffold.baseUrl": {
+          "type": "string",
+          "default": "",
+          "description": "Custom base URL for openai-compatible providers. Leave empty otherwise."
+        }
+      }
+    }
+  },
+  "scripts": {
+    "vscode:prepublish": "npm run build",
+    "build": "node esbuild.mjs",
+    "watch": "node esbuild.mjs --watch",
+    "package": "vsce package",
+    "compile-tsc": "tsc --noEmit"
+  },
+  "devDependencies": {
+    "@types/node": "^20.11.0",
+    "@types/vscode": "^1.101.0",
+    "@vscode/vsce": "^3.2.0",
+    "esbuild": "^0.24.0",
+    "typescript": "^5.3.3"
+  }
+}
